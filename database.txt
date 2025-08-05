@@ -1,0 +1,99 @@
+CREATE TABLE `users` (
+  `user_id` int PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(100),
+  `email` varchar(100) UNIQUE,
+  `password_hash` text,
+  `phone` varchar(20),
+  `user_type` varchar(20),
+  `created_at` timestamp
+);
+
+CREATE TABLE `workshops` (
+  `workshop_id` int PRIMARY KEY AUTO_INCREMENT,
+  `owner_id` int,
+  `name` varchar(100),
+  `description` text,
+  `address` text,
+  `latitude` decimal(10,7),
+  `longitude` decimal(10,7),
+  `phone` varchar(20),
+  `email` varchar(100),
+  `operating_hours` varchar(255),
+  `certifications` text,
+  `is_verified` boolean,
+  `created_at` timestamp
+);
+
+CREATE TABLE `services` (
+  `service_id` int PRIMARY KEY AUTO_INCREMENT,
+  `workshop_id` int,
+  `service_name` varchar(100),
+  `description` text,
+  `price` decimal(10,2),
+  `estimated_duration` time,
+  `is_active` boolean
+);
+
+CREATE TABLE `bookings` (
+  `booking_id` int PRIMARY KEY AUTO_INCREMENT,
+  `customer_id` int,
+  `workshop_id` int,
+  `service_id` int,
+  `booking_time` timestamp,
+  `status` varchar(20),
+  `created_at` timestamp
+);
+
+CREATE TABLE `feedback` (
+  `feedback_id` int PRIMARY KEY AUTO_INCREMENT,
+  `booking_id` int,
+  `customer_id` int,
+  `workshop_id` int,
+  `rating` int,
+  `comment` text,
+  `created_at` timestamp
+);
+
+CREATE TABLE `notifications` (
+  `notification_id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int,
+  `message` text,
+  `is_read` boolean,
+  `sent_at` timestamp
+);
+
+CREATE TABLE `favorites` (
+  `favorite_id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int,
+  `workshop_id` int,
+  `added_at` timestamp
+);
+
+CREATE TABLE `admin` (
+  `admin_id` int PRIMARY KEY AUTO_INCREMENT,
+  `username` varchar(50) UNIQUE,
+  `password_hash` text,
+  `role` varchar(20)
+);
+
+ALTER TABLE `workshops` ADD FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `services` ADD FOREIGN KEY (`workshop_id`) REFERENCES `workshops` (`workshop_id`);
+
+ALTER TABLE `bookings` ADD FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `bookings` ADD FOREIGN KEY (`workshop_id`) REFERENCES `workshops` (`workshop_id`);
+
+ALTER TABLE `bookings` ADD FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`);
+
+ALTER TABLE `feedback` ADD FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`);
+
+ALTER TABLE `feedback` ADD FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `feedback` ADD FOREIGN KEY (`workshop_id`) REFERENCES `workshops` (`workshop_id`);
+
+ALTER TABLE `notifications` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `favorites` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `favorites` ADD FOREIGN KEY (`workshop_id`) REFERENCES `workshops` (`workshop_id`);
