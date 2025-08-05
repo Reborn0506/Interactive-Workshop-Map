@@ -99,7 +99,7 @@ const defaultStatistics: Statistic[] = [
   { id: '4', value: '150+', label: 'Countries' }
 ]
 
-export function ContentProvider({ children }: { children: ReactNode }) {
+function ContentProvider({ children }: { children: ReactNode }) {
   const [hero, setHero] = useState<HeroContent>(defaultHero)
   const [features, setFeatures] = useState<Feature[]>(defaultFeatures)
   const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery)
@@ -157,10 +157,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function useContent() {
+function useContent() {
   const context = useContext(ContentContext)
   if (context === undefined) {
     throw new Error('useContent must be used within a ContentProvider')
   }
   return context
 }
+
+export { ContentProvider, useContent }
